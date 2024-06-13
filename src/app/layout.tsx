@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "~/styles/globals.css";
 import LocalFont from "next/font/local";
 import { cn } from "~/utils";
 
@@ -10,7 +10,7 @@ const font = LocalFont({
   src: "../../assets/fonts/Tiny5-Regular.ttf",
   variable: "--font-tiny5",
 });
-console.log(font);
+
 export const metadata: Metadata = {
   title: "Ludo",
   description: "Play ludo online. Multiplayer",

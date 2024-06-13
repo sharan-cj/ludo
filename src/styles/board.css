@@ -1,0 +1,105 @@
+.board-layout {
+  display: grid;
+  width: 90vmin;
+  height: 90vmin;
+  border-radius: 1rem;
+  overflow: hidden;
+  grid-template-areas:
+    "q2  q2  q2  q2  q2  q2  b24 b25 b26  q3  q3  q3  q3  q3  q3"
+    "q2  q2  q2  q2  q2  q2  b23 b63 b27  q3  q3  q3  q3  q3  q3"
+    "q2  q2  q2  q2  q2  q2  b22 b64 b28  q3  q3  q3  q3  q3  q3"
+    "q2  q2  q2  q2  q2  q2  b21 b65 b29  q3  q3  q3  q3  q3  q3"
+    "q2  q2  q2  q2  q2  q2  b20 b66 b30  q3  q3  q3  q3  q3  q3"
+    "q2  q2  q2  q2  q2  q2  b19 b67 b31  q3  q3  q3  q3  q3  q3"
+    "b13 b14 b15 b16 b17 b18 f23 f3  f34  b32 b33 b34 b35 b36 b37"
+    "b12 b58 b59 b60 b61 b62 f2  f0  f4   b72 b71 b70 b69 b68 b38"
+    "b11 b10 b9  b8  b7  b6  f12 f1  f14  b44 b43 b42 b41 b40 b39"
+    "q1  q1  q1  q1  q1  q1  b5  b57 b45  q4  q4  q4  q4  q4  q4"
+    "q1  q1  q1  q1  q1  q1  b4  b56 b46  q4  q4  q4  q4  q4  q4"
+    "q1  q1  q1  q1  q1  q1  b3  b55 b47  q4  q4  q4  q4  q4  q4"
+    "q1  q1  q1  q1  q1  q1  b2  b54 b48  q4  q4  q4  q4  q4  q4"
+    "q1  q1  q1  q1  q1  q1  b1  b53 b49  q4  q4  q4  q4  q4  q4"
+    "q1  q1  q1  q1  q1  q1  b52 b51 b50  q4  q4  q4  q4  q4  q4";
+}
+
+.board-box-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+}
+
+.board-box {
+  outline: 0.5px solid var(--accent);
+  position: relative;
+}
+
+.board-finish-f0 {
+  background: conic-gradient(
+    var(--green) 45deg,
+    var(--yellow) 45deg,
+    var(--yellow) 135deg,
+    var(--blue) 135deg,
+    var(--blue) 225deg,
+    var(--red) 225deg,
+    var(--red) 315deg,
+    var(--green) 315deg,
+    var(--green)
+  );
+}
+
+.board-finish-f23 {
+  background: conic-gradient(
+    var(--green) 45deg,
+    var(--green) 135deg,
+    var(--red) 135deg,
+    var(--red) 315deg,
+    var(--green) 315deg
+  );
+}
+
+.board-finish-f14 {
+  background: conic-gradient(
+    var(--yellow) 45deg,
+    var(--yellow) 135deg,
+    var(--blue) 135deg,
+    var(--blue) 315deg,
+    var(--yellow) 315deg
+  );
+}
+
+.board-finish-f34 {
+  background: conic-gradient(
+    var(--green) 0deg,
+    var(--green) 45deg,
+    var(--yellow) 45deg,
+    var(--yellow) 225deg,
+    var(--green) 225deg,
+    var(--green) 315deg
+  );
+}
+
+.board-finish-f12 {
+  background: conic-gradient(
+    var(--red) 0deg,
+    var(--red) 45deg,
+    var(--blue) 45deg,
+    var(--blue) 225deg,
+    var(--red) 225deg,
+    var(--red) 315deg
+  );
+}
+
+.board-start-area {
+  display: grid;
+  place-items: center;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border-radius: 50%;
+  width: 60%;
+  height: 60%;
+  padding: 10%;
+  background: var(--background);
+  border: 2px solid var(--accent);
+}
