@@ -5,6 +5,13 @@ export const StartPoints: Record<number, string> = {
   40: "q4",
 };
 
+export const QtrToStartPoint: Record<string, number> = {
+  q1: 1,
+  q2: 14,
+  q3: 27,
+  q4: 40,
+};
+
 export const Stars: Record<number, string> = {
   9: "q1",
   22: "q2",

@@ -27,11 +27,18 @@ export const pawnsPositionAtom = atom({
   },
 });
 
-const boxes: Record<number, number[]> = {};
+export const startAreaAtom = atom({
+  q1: ["q1-p1", "q1-p2", "q1-p3", "q1-p4"],
+  q2: ["q2-p1", "q2-p2", "q2-p3", "q2-p4"],
+  q3: ["q3-p1", "q3-p2", "q3-p3", "q3-p4"],
+  q4: ["q4-p1", "q4-p2", "q4-p3", "q4-p4"],
+});
+
+const boxes: Record<number, string[]> = {};
 new Array(72).fill("").forEach((_, i) => {
   boxes[i + 1] = [];
 });
-export const boardAtom = atom<Record<number, number[]>>(boxes);
+export const boardAtom = atom<Record<number, string[]>>(boxes);
 
 export const playerTurnAtom = atom<"q1" | "q2" | "q3" | "q4">("q1");
 

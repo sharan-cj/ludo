@@ -13,6 +13,7 @@
 
     --yellow: theme("colors.yellow.500");
     --blue: theme("colors.sky.500");
+    --blue-dark: theme("colors.sky.900");
     --red: theme("colors.red.500");
     --green: theme("colors.green.700");
   }
