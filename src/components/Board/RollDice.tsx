@@ -8,8 +8,14 @@ import {
   BsFillDice5Fill,
   BsFillDice6Fill,
 } from "react-icons/bs";
-import { diceRollAtom } from "~/state";
-import useSound from "use-sound";
+import {
+  diceRollAtom,
+  playerTurnAtom,
+  startAreaAtom,
+  waitingForMove,
+  waitingForRoll,
+} from "~/state";
+import { useAction, useSound } from "~/hooks";
 
 const diceMovement: Record<number, string> = {
   1: `rotateX(90deg) translateZ(50px)`,
@@ -23,33 +29,43 @@ const diceMovement: Record<number, string> = {
 export const RollDice = () => {
   const diceRef = useRef<HTMLDivElement | null>(null);
   const [diceRollValue, setDiceRollValue] = useAtom(diceRollAtom);
-
-  const [play] = useSound("sound/diceRolling.mp3");
+  const { playSound } = useSound("diceRolling.mp3");
+  const { updatePlayerTurn } = useAction();
+  const [currentTurn] = useAtom(playerTurnAtom);
+  const [startArea] = useAtom(startAreaAtom);
+  const [isWaitingForMove, setWaitingForMove] = useAtom(waitingForMove);
+  const [isWaitingForRoll, setWaitingForRoll] = useAtom(waitingForRoll);
 
   useEffect(() => {
-    if (!diceRef.current || !diceRollValue) return;
+    if (!diceRef.current || isWaitingForRoll || !diceRollValue) return;
 
     diceRef.current.style.animation = "roll 1s linear 0s infinite";
-    play();
+    playSound();
     const timeout = setTimeout(() => {
       if (!diceRef.current) return;
 
       diceRef.current.style.animation = "none";
       diceRef.current.style.transform = diceMovement[diceRollValue];
 
-      setDiceRollValue(0);
+      setWaitingForMove(true);
+      setWaitingForRoll(true);
     }, 800);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [diceRollValue]);
+  }, [diceRollValue, isWaitingForRoll]);
 
   const handleRollDice = () => {
     const diceRoll = Math.floor(Math.random() * 6) + 1;
-    console.log(diceRoll);
 
     setDiceRollValue(diceRoll);
+
+    if (startArea[currentTurn].length === 4) {
+      updatePlayerTurn();
+    }
+
+    setWaitingForRoll(false);
   };
   return (
     <div

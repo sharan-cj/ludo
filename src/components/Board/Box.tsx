@@ -1,8 +1,10 @@
 import { QtrInsidePath, QtrToColor, Stars, StartPoints, cn } from "~/utils";
 import { FaRegStar } from "react-icons/fa6";
-import { memo } from "react";
-import { LuMapPin } from "react-icons/lu";
+import { memo, useMemo } from "react";
 import { MdLocationPin } from "react-icons/md";
+import { useAtom, useAtomValue } from "jotai";
+import { diceRollAtom, playerTurnAtom, waitingForMove } from "~/state";
+import { useAction } from "~/hooks";
 type TBoxProps = {
   gridArea: string;
   id: number;
@@ -13,8 +15,30 @@ const Box = ({ gridArea, id, pawns }: TBoxProps) => {
   const bg = qtr && `bg-[var(--${QtrToColor[qtr]})]`;
   const starBoxQtr = Stars[id];
 
+  const [isWaitingForMove, setWaitingForMove] = useAtom(waitingForMove);
+  const player = useAtomValue(playerTurnAtom);
+  const { movePawn } = useAction();
+  const isHighlighted =
+    isWaitingForMove && pawns.some((pawn) => pawn.split("-")[0] === player);
+
+  const boxShadow = isHighlighted ? "inset 0 0 6px 4px var(--accent)" : "";
+
+  const handleClick = () => {
+    if (!isHighlighted) return;
+    movePawn(pawns.find((pawn) => pawn.split("-")[0] === player) as string, id);
+  };
+
   return (
-    <div className={cn("board-box", bg)} style={{ gridArea }}>
+    <div
+      className={cn("board-box", bg)}
+      style={{
+        gridArea,
+        boxShadow,
+        cursor: isHighlighted ? "pointer" : "auto",
+      }}
+      role="button"
+      onClick={handleClick}
+    >
       <span className="text-transparent">&nbsp; .</span>
 
       {pawns.map((pawn, index) => {

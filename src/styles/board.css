@@ -20,6 +20,12 @@
     "q1  q1  q1  q1  q1  q1  b52 b51 b50  q4  q4  q4  q4  q4  q4";
 }
 
+@media screen and (max-width: 450px) {
+  .board-layout {
+    width: 98vmin;
+  }
+}
+
 .board-box-star {
   position: absolute;
   top: 50%;

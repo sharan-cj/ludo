@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
 export const pawnsPositionAtom = atom({
   q1: {
@@ -43,3 +44,9 @@ export const boardAtom = atom<Record<number, string[]>>(boxes);
 export const playerTurnAtom = atom<"q1" | "q2" | "q3" | "q4">("q1");
 
 export const diceRollAtom = atom(0);
+
+export const waitingForMove = atom(false);
+
+export const waitingForRoll = atom(true);
+
+export const gameSoundAtom = atomWithStorage("gameSound", true);
