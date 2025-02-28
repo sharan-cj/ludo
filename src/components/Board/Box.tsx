@@ -3,7 +3,7 @@ import { FaRegStar } from "react-icons/fa6";
 import { memo, useMemo } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { useAtom, useAtomValue } from "jotai";
-import { diceRollAtom, playerTurnAtom, waitingForMove } from "~/state";
+import { diceRollAtom, pawnMoveAtom, playerTurnAtom } from "~/state";
 import { useAction } from "~/hooks";
 type TBoxProps = {
   gridArea: string;
@@ -15,11 +15,11 @@ const Box = ({ gridArea, id, pawns }: TBoxProps) => {
   const bg = qtr && `bg-[var(--${QtrToColor[qtr]})]`;
   const starBoxQtr = Stars[id];
 
-  const [isWaitingForMove, setWaitingForMove] = useAtom(waitingForMove);
+  const [isWaitingToMove, setWaitingToMove] = useAtom(pawnMoveAtom);
   const player = useAtomValue(playerTurnAtom);
   const { movePawn } = useAction();
   const isHighlighted =
-    isWaitingForMove && pawns.some((pawn) => pawn.split("-")[0] === player);
+    isWaitingToMove && pawns.some((pawn) => pawn.split("-")[0] === player);
 
   const boxShadow = isHighlighted ? "inset 0 0 6px 4px var(--accent)" : "";
 

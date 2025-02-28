@@ -4,13 +4,17 @@ import { journey } from "~/config";
 import {
   boardAtom,
   diceRollAtom,
+  diceRollValueAtom,
+  pawnMoveAtom,
   playerTurnAtom,
   startAreaAtom,
 } from "~/state";
 
 export const useAction = () => {
   const [currentTurn, setPlayerTurn] = useAtom(playerTurnAtom);
-  const diceRoll = useAtomValue(diceRollAtom);
+  const diceRoll = useAtomValue(diceRollValueAtom);
+  const [isWaitingToMove, setWaitingToMove] = useAtom(pawnMoveAtom);
+  const [isWaitingForRoll, setWaitingForRoll] = useAtom(diceRollAtom);
   const startArea = useAtomValue(startAreaAtom);
   const [board, setBoard] = useAtom(boardAtom);
   const updatePlayerTurn = () => {
@@ -38,12 +42,6 @@ export const useAction = () => {
       const nextPositionIndex = currentPosition + diceRoll - 1;
       const nextPosition = path[nextPositionIndex];
 
-      console.table({
-        currentPosition,
-        nextPosition,
-        nextPositionIndex,
-        boxId,
-      });
       setBoard((prev) => {
         return {
           ...prev,

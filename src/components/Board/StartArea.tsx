@@ -1,9 +1,11 @@
 import { useAtom, useAtomValue } from "jotai";
-import React, { useEffect } from "react";
 import { FaChessPawn } from "react-icons/fa6";
 import {
   boardAtom,
   diceRollAtom,
+  diceRollValueAtom,
+  pawnMoveAtom,
+  pawnsPositionAtom,
   playerTurnAtom,
   startAreaAtom,
 } from "~/state";
@@ -62,9 +64,12 @@ const StartAreaPawns = ({ qtr }: TStartAreaPawnsProps) => {
   const [_, setBoard] = useAtom(boardAtom);
   const [startAreaPawns, setStartAreaPawns] = useAtom(startAreaAtom);
   const player = useAtomValue(playerTurnAtom);
-  const diceRoll = useAtomValue(diceRollAtom);
+  const diceRollValue = useAtomValue(diceRollValueAtom);
+  const [_diceRoll, setWaitingForRoll] = useAtom(diceRollAtom);
+  const [_pawnMove, setWaitingToMove] = useAtom(pawnMoveAtom);
+  const [_pawnsPosition, setPawnsPosition] = useAtom(pawnsPositionAtom);
   const isSelectionActive =
-    diceRoll === 6 && player === qtr && startAreaPawns[qtr].length > 0;
+    diceRollValue === 6 && player === qtr && startAreaPawns[qtr].length > 0;
 
   const boxShadow = isSelectionActive ? `inset 0 0 6px 4px var(--accent)` : "";
 
@@ -85,6 +90,18 @@ const StartAreaPawns = ({ qtr }: TStartAreaPawnsProps) => {
         [qtr]: startAreaPawns[qtr].filter((p) => p !== pawn),
       };
     });
+
+    let pawnId = pawn.split("-")[1];
+    console.log(pawnId, boxId);
+    setPawnsPosition((pawnsPosition) => {
+      return {
+        ...pawnsPosition,
+        [qtr]: { ...pawnsPosition[qtr], [pawnId]: boxId },
+      };
+    });
+
+    setWaitingToMove(false);
+    setWaitingForRoll(true);
   };
   return (
     <div

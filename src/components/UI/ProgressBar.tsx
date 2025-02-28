@@ -1,9 +1,20 @@
 "use client";
 
+import { useAtomValue } from "jotai";
+import { useEffect } from "react";
 import { useTimer } from "~/hooks";
+import { pawnMoveAtom, diceRollAtom, playerTurnAtom } from "~/state";
 
 export const ProgressBar = () => {
-  const { time } = useTimer();
+  const { time, resetTimer } = useTimer();
+
+  const isWaitingForRoll = useAtomValue(diceRollAtom);
+  const isWaitingToMove = useAtomValue(pawnMoveAtom);
+  const playerTurn = useAtomValue(playerTurnAtom);
+
+  useEffect(() => {
+    resetTimer();
+  }, [isWaitingForRoll, isWaitingToMove, playerTurn]);
 
   const progress = time * 2;
   return (

@@ -1,5 +1,5 @@
-import { useAtom } from "jotai";
-import React, { useEffect, useRef } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BsFillDice1Fill,
   BsFillDice2Fill,
@@ -7,15 +7,17 @@ import {
   BsFillDice4Fill,
   BsFillDice5Fill,
   BsFillDice6Fill,
+  BsQuestionSquareFill,
 } from "react-icons/bs";
 import {
-  diceRollAtom,
+  diceRollValueAtom,
   playerTurnAtom,
   startAreaAtom,
-  waitingForMove,
-  waitingForRoll,
+  pawnMoveAtom,
+  diceRollAtom,
+  pawnsPositionAtom,
 } from "~/state";
-import { useAction, useSound } from "~/hooks";
+import { useAction, usePlayer, useSound } from "~/hooks";
 
 const diceMovement: Record<number, string> = {
   1: `rotateX(90deg) translateZ(50px)`,
@@ -23,56 +25,72 @@ const diceMovement: Record<number, string> = {
   3: `rotateX(-90deg) translateZ(50px)`,
   4: `rotateY(90deg) translateZ(50px)`,
   5: `rotateY(-90deg) translateZ(50px)`,
-  6: "",
+  6: ``,
 };
 
 export const RollDice = () => {
   const diceRef = useRef<HTMLDivElement | null>(null);
-  const [diceRollValue, setDiceRollValue] = useAtom(diceRollAtom);
+  const [diceRollValue, setDiceRollValue] = useAtom(diceRollValueAtom);
   const { playSound } = useSound("diceRolling.mp3");
   const { updatePlayerTurn } = useAction();
   const [currentTurn] = useAtom(playerTurnAtom);
   const [startArea] = useAtom(startAreaAtom);
-  const [isWaitingForMove, setWaitingForMove] = useAtom(waitingForMove);
-  const [isWaitingForRoll, setWaitingForRoll] = useAtom(waitingForRoll);
+  const [isWaitingToMove, setWaitingToMove] = useAtom(pawnMoveAtom);
+  const [isWaitingForRoll, setWaitingForRoll] = useAtom(diceRollAtom);
 
-  useEffect(() => {
-    if (!diceRef.current || isWaitingForRoll || !diceRollValue) return;
+  const pawnPosition = useAtomValue(pawnsPositionAtom);
+  const [isLoading, setLoading] = useState(false);
 
+  const { canPlayerMove } = usePlayer();
+
+  const diceRollAnimation = async (value: number) => {
+    if (!diceRef.current) return;
     diceRef.current.style.animation = "roll 1s linear 0s infinite";
     playSound();
-    const timeout = setTimeout(() => {
-      if (!diceRef.current) return;
 
-      diceRef.current.style.animation = "none";
-      diceRef.current.style.transform = diceMovement[diceRollValue];
-
-      setWaitingForMove(true);
-      setWaitingForRoll(true);
-    }, 800);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [diceRollValue, isWaitingForRoll]);
-
-  const handleRollDice = () => {
-    const diceRoll = Math.floor(Math.random() * 6) + 1;
-
-    setDiceRollValue(diceRoll);
-
-    if (startArea[currentTurn].length === 4) {
-      updatePlayerTurn();
-    }
-
-    setWaitingForRoll(false);
+    await new Promise((resolve) =>
+      setTimeout(() => {
+        if (!diceRef.current) return;
+        diceRef.current.style.animation = "none";
+        diceRef.current.style.transform = diceMovement[value];
+        resolve(true);
+      }, 800)
+    );
   };
+
+  const handleRollDice = async () => {
+    if (isLoading || !isWaitingForRoll) return;
+
+    try {
+      setLoading(true);
+      const diceRoll = Math.floor(Math.random() * 6) + 1;
+      await diceRollAnimation(diceRoll);
+      setDiceRollValue(diceRoll);
+
+      if (canPlayerMove(diceRoll)) {
+        setWaitingToMove(true);
+        setWaitingForRoll(false);
+      } else {
+        updatePlayerTurn();
+        setWaitingToMove(false);
+        setWaitingForRoll(true);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
-      className="board-roll-dice cursor-pointer m-4 "
+      className="board-roll-dice cursor-pointer m-4"
       ref={diceRef}
       onClick={handleRollDice}
       role="button"
+      style={{
+        visibility: isWaitingForRoll ? "visible" : "hidden",
+      }}
     >
       <div className="origin-bottom" style={{ transform: "rotateX(90deg)" }}>
         <BsFillDice1Fill />
@@ -90,7 +108,7 @@ export const RollDice = () => {
         <BsFillDice5Fill />
       </div>
       <div className="">
-        <BsFillDice6Fill />
+        {diceRollValue ? <BsFillDice6Fill /> : <BsQuestionSquareFill />}
       </div>
     </div>
   );

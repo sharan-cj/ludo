@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const TIME_OUT = 50; // 50 seconds
 export const useTimer = () => {
@@ -20,10 +20,10 @@ export const useTimer = () => {
     };
   }, [time]);
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     setTimer(TIME_OUT);
     setTimeUp(false);
-  };
+  }, []);
 
   return {
     resetTimer,
